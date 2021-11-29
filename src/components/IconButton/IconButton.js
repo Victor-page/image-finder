@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import classNames from 'classnames/bind';
 
 import classes from './IconButton.module.css';
 
@@ -11,7 +12,9 @@ const IconButton = ({
 }) => (
   <button
     type={type}
-    className={`${classes['icon-button']} ${extraClassName}`}
+    className={classNames.bind(classes)('icon-button', {
+      [extraClassName]: extraClassName,
+    })}
     onClick={onClick}
     {...allyProps}
   >
