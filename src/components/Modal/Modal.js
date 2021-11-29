@@ -30,7 +30,10 @@ class Modal extends Component {
   };
 
   render() {
-    const { onClose } = this.props;
+    const {
+      onClose,
+      modalPhoto: { largeImg: photo, alt },
+    } = this.props;
 
     return createPortal(
       <div className={classes.overlay} onClick={this.handleBackdropClick}>
@@ -43,12 +46,7 @@ class Modal extends Component {
           >
             <CloseIcon width="40" height="40" fill="#fff" />
           </IconButton>
-          <img
-            src={
-              'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80'
-            }
-            alt=""
-          />
+          <img src={photo} alt={alt} />
         </div>
       </div>,
       modalRoot
