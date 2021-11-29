@@ -1,11 +1,12 @@
 import { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 import Modal from 'components/Modal';
 import Searchbar from 'components/Searchbar';
 import ImageGallery from 'components/ImageGallery';
 
 class App extends Component {
-  state = { showModal: false, photos: [], modalPhoto: null };
+  state = { showModal: false, photos: [], modalPhoto: null, query: '' };
 
   componentDidMount() {
     fetch(
@@ -17,6 +18,10 @@ class App extends Component {
       });
   }
 
+  handleFormSubmit = (query) => {
+    this.setState({ query });
+  };
+
   toggleModal = (modalPhoto) => {
     modalPhoto && this.setState({ modalPhoto });
 
@@ -24,19 +29,25 @@ class App extends Component {
   };
 
   render() {
-    const { showModal, photos, modalPhoto } = this.state;
+    const { showModal, photos, modalPhoto, query } = this.state;
 
     return (
       <div>
-        <Searchbar />
+        <Searchbar onSubmit={this.handleFormSubmit} />
 
         {showModal && (
           <Modal onClose={this.toggleModal} modalPhoto={modalPhoto} />
         )}
 
         {photos.length && (
-          <ImageGallery photos={photos} onPhotoClick={this.toggleModal} />
+          <ImageGallery
+            photos={photos}
+            onPhotoClick={this.toggleModal}
+            query={query}
+          />
         )}
+
+        <ToastContainer />
       </div>
     );
   }
