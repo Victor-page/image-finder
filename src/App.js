@@ -6,17 +6,7 @@ import Searchbar from 'components/Searchbar';
 import ImageGallery from 'components/ImageGallery';
 
 class App extends Component {
-  state = { showModal: false, photos: [], modalPhoto: null, query: '' };
-
-  componentDidMount() {
-    fetch(
-      'https://pixabay.com/api/?q=cat&page=1&key=24568502-5ca9f026ce5836891cf338e0e&image_type=photo&orientation=horizontal&per_page=12'
-    )
-      .then((response) => response.json())
-      .then(({ hits }) => {
-        this.setState({ photos: hits });
-      });
-  }
+  state = { showModal: false, modalPhoto: null, query: '' };
 
   handleFormSubmit = (query) => {
     this.setState({ query });
@@ -29,7 +19,7 @@ class App extends Component {
   };
 
   render() {
-    const { showModal, photos, modalPhoto, query } = this.state;
+    const { showModal, modalPhoto, query } = this.state;
 
     return (
       <div>
@@ -39,13 +29,7 @@ class App extends Component {
           <Modal onClose={this.toggleModal} modalPhoto={modalPhoto} />
         )}
 
-        {photos.length && (
-          <ImageGallery
-            photos={photos}
-            onPhotoClick={this.toggleModal}
-            query={query}
-          />
-        )}
+        <ImageGallery onPhotoClick={this.toggleModal} query={query} />
 
         <ToastContainer />
       </div>
