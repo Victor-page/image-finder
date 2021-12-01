@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import classes from './ImageGalleryDataView.module.css';
 
 import ImageGalleryItem from './ImageGalleryItem';
@@ -19,5 +21,15 @@ const ImageGalleryDataView = ({ photos, onPhotoClick, onLoadMore }) => (
     {photos.length && <LoadMoreButton onLoadMore={onLoadMore} />}
   </>
 );
+
+ImageGalleryDataView.propTypes = {
+  onLoadMore: PropTypes.func,
+  onPhotoClick: PropTypes.func.isRequired,
+  photos: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+    })
+  ).isRequired,
+};
 
 export default ImageGalleryDataView;

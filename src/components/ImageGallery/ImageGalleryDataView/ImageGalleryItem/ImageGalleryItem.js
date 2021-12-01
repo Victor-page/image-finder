@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import { Component } from 'react';
 
 import classes from './ImageGalleryItem.module.css';
@@ -18,5 +20,12 @@ class ImageGalleryItem extends Component {
     );
   }
 }
+
+ImageGalleryItem.propTypes = {
+  alt: PropTypes.string.isRequired,
+  largeImg: PropTypes.string.isRequired,
+  onPhotoClick: PropTypes.func.isRequired,
+  smallImg: PropTypes.string.isRequired,
+};
 
 export default ImageGalleryItem;

@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom';
 import { ImSpinner } from 'react-icons/im';
+import PropTypes from 'prop-types';
 
 import ImageGalleryDataView from '../ImageGalleryDataView';
 
@@ -29,6 +30,10 @@ const ImageGalleryPendingView = ({ query, viewsNumber }) => {
       <ImageGalleryDataView photos={pendingImages} onPhotoClick={() => {}} />
     </div>
   );
+};
+
+ImageGalleryPendingView.propTypes = {
+  viewsNumber: PropTypes.number.isRequired,
 };
 
 export default ImageGalleryPendingView;

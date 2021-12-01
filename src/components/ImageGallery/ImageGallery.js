@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import ImageGalleryErrorView from './ImageGalleryErrorView';
 import ImageGalleryDataView from './ImageGalleryDataView';
@@ -65,5 +66,12 @@ class ImageGallery extends Component {
     }
   }
 }
+
+ImageGallery.propTypes = {
+  onLoadMore: PropTypes.func.isRequired,
+  onPhotoClick: PropTypes.func.isRequired,
+  page: PropTypes.number,
+  query: PropTypes.string,
+};
 
 export default ImageGallery;

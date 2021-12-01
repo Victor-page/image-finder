@@ -5,6 +5,8 @@ import Modal from 'components/Modal';
 import Searchbar from 'components/Searchbar';
 import ImageGallery from 'components/ImageGallery';
 
+import classes from 'App.module.css';
+
 class App extends Component {
   state = { showModal: false, modalPhoto: null, query: '', page: null };
 
@@ -31,7 +33,7 @@ class App extends Component {
     const { showModal, modalPhoto, query, page } = this.state;
 
     return (
-      <div>
+      <div className={classes.app}>
         <Searchbar onSubmit={this.handleFormSubmit} />
 
         {showModal && (
