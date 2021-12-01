@@ -1,3 +1,11 @@
+.spinner-wrapper {
+  position: fixed;
+  top: 50%;
+  text-align: center;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .icon-spin {
   animation: icon-spin 2s infinite linear;
 }
@@ -6,6 +14,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(359deg);
   }
