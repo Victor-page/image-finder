@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import ImageGalleryErrorView from './ImageGalleryErrorView';
@@ -7,66 +7,60 @@ import ImageGalleryPendingView from './ImageGalleryPendingView';
 import { fetchGallery } from 'services/pixabay-api';
 import classes from './ImageGallery.module.css';
 
-class ImageGallery extends Component {
-  state = { photos: null, error: null, status: 'idle' };
+const ImageGallery = ({ query, page, onPhotoClick, onLoadMore }) => {
+  const [photos, setPhotos] = useState(null);
+  const [error, setError] = useState(null);
+  const [status, setStatus] = useState('idle');
 
-  componentDidUpdate(prevProps, prevState) {
-    const { query: prevQuery, page: prevPage } = prevProps;
-    const { query: currentQuery, page: currentPage } = this.props;
-    const areSameQueries = prevQuery === currentQuery;
-    const areSamePages = prevPage === currentPage;
+  const isFirstRender = useRef(true);
 
-    if (areSameQueries && areSamePages) {
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
       return;
     }
 
-    this.setState({ status: 'pending' });
-
-    fetchGallery(currentQuery, currentPage)
+    setStatus('pending');
+    fetchGallery(query, page)
       .then(({ hits: loadedPhotos }) => {
-        this.setState((prevState) => ({
-          photos:
-            prevState.photos && areSameQueries
-              ? prevState.photos.concat(loadedPhotos)
-              : loadedPhotos,
-          status: 'resolved',
-        }));
+        setPhotos((prevPhotos) =>
+          prevPhotos ? prevPhotos.concat(loadedPhotos) : loadedPhotos
+        );
+        setStatus('resolved');
       })
-      .catch((error) => this.setState({ error, status: 'rejected' }));
+      .catch((error) => {
+        setError(error);
+        setStatus('rejected');
+      });
+  }, [query, page]);
+
+  if (status === 'idle') {
+    return <h1 className={classes.title}>Enter some search query.</h1>;
   }
 
-  render() {
-    const { onPhotoClick, query, onLoadMore } = this.props;
-    const { photos, error, status } = this.state;
-
-    if (status === 'idle') {
-      return <h1 className={classes.title}>Enter some search query.</h1>;
-    }
-
-    if (status === 'pending') {
-      return (
-        <ImageGalleryPendingView
-          query={query}
-          viewsNumber={photos?.length || 12}
-        />
-      );
-    }
-
-    if (status === 'rejected') {
-      <ImageGalleryErrorView message={error.message} />;
-    }
-
-    if (status === 'resolved') {
-      return (
-        <ImageGalleryDataView
-          photos={photos}
-          onPhotoClick={onPhotoClick}
-          onLoadMore={onLoadMore}
-        />
-      );
-    }
+  if (status === 'pending') {
+    return (
+      <ImageGalleryPendingView
+        query={query}
+        viewsNumber={photos?.length || 12}
+      />
+    );
   }
-}
+
+  if (status === 'rejected') {
+    <ImageGalleryErrorView message={error.message} />;
+  }
+
+  if (status === 'resolved') {
+    return (
+      <ImageGalleryDataView
+        photos={photos}
+        onPhotoClick={onPhotoClick}
+        onLoadMore={onLoadMore}
+      />
+    );
+  }
+};
 
 ImageGallery.propTypes = {
   onLoadMore: PropTypes.func.isRequired,
