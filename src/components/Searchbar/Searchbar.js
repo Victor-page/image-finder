@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PropTypes from 'prop-types';
@@ -9,9 +9,7 @@ import IconButton from 'components/IconButton';
 import { ReactComponent as SearchIcon } from 'icons/search.svg';
 
 const Searchbar = ({ onSubmit }) => {
-  const [searchQuery, setSearchQuery] = useState(
-    () => JSON.parse(window.localStorage.getItem('searchQuery')) ?? ''
-  );
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleQueryChange = ({ currentTarget: { value } }) => {
     setSearchQuery(value.toLowerCase());
@@ -26,10 +24,6 @@ const Searchbar = ({ onSubmit }) => {
     onSubmit(searchQuery);
     setSearchQuery('');
   };
-
-  useEffect(() => {
-    window.localStorage.setItem('searchQuery', JSON.stringify(searchQuery));
-  }, [searchQuery]);
 
   return (
     <header className={classes.searchbar}>
