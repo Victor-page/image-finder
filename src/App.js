@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 
 import Modal from 'components/Modal';
@@ -7,50 +7,48 @@ import ImageGallery from 'components/ImageGallery';
 
 import classes from 'App.module.css';
 
-class App extends Component {
-  state = { showModal: false, modalPhoto: null, query: '', page: null };
+import usePrevious from 'hooks/use-previous';
 
-  handleFormSubmit = (query) => {
-    this.setState((prevState) => ({
-      query,
-      page:
-        prevState.page === null || prevState.query !== query
-          ? 1
-          : this.state.page,
-    }));
-  };
+const App = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [modalPhoto, setModalPhoto] = useState(null);
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(null);
 
-  toggleModal = (modalPhoto) => {
-    modalPhoto && this.setState({ modalPhoto });
-    this.setState((state) => ({ showModal: !state.showModal }));
-  };
+  const prevQuery = usePrevious(query);
 
-  handleLoadMore = () => {
-    this.setState((prevState) => ({ page: prevState.page + 1 }));
-  };
-
-  render() {
-    const { showModal, modalPhoto, query, page } = this.state;
-
-    return (
-      <div className={classes.app}>
-        <Searchbar onSubmit={this.handleFormSubmit} />
-
-        {showModal && (
-          <Modal onClose={this.toggleModal} modalPhoto={modalPhoto} />
-        )}
-
-        <ImageGallery
-          onPhotoClick={this.toggleModal}
-          query={query}
-          page={page}
-          onLoadMore={this.handleLoadMore}
-        />
-
-        <ToastContainer />
-      </div>
+  const handleFormSubmit = (query) => {
+    setQuery(query);
+    setPage((prevPage) =>
+      prevPage === null || prevQuery !== query ? 1 : page
     );
-  }
-}
+  };
+
+  const toggleModal = (modalPhoto) => {
+    modalPhoto && setModalPhoto(modalPhoto);
+    setShowModal((prevShowModal) => !prevShowModal);
+  };
+
+  const handleLoadMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  return (
+    <div className={classes.app}>
+      <Searchbar onSubmit={handleFormSubmit} />
+
+      {showModal && <Modal onClose={toggleModal} modalPhoto={modalPhoto} />}
+
+      <ImageGallery
+        onPhotoClick={toggleModal}
+        query={query}
+        page={page}
+        onLoadMore={handleLoadMore}
+      />
+
+      <ToastContainer />
+    </div>
+  );
+};
 
 export default App;

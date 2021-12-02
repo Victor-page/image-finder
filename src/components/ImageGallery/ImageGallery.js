@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import ImageGalleryErrorView from './ImageGalleryErrorView';
 import ImageGalleryDataView from './ImageGalleryDataView';
 import ImageGalleryPendingView from './ImageGalleryPendingView';
-import { fetchGallery } from 'sevices/pixabay-api';
+import { fetchGallery } from 'services/pixabay-api';
+import classes from './ImageGallery.module.css';
 
 class ImageGallery extends Component {
   state = { photos: null, error: null, status: 'idle' };
@@ -39,7 +40,7 @@ class ImageGallery extends Component {
     const { photos, error, status } = this.state;
 
     if (status === 'idle') {
-      return <h1>Enter some search query.</h1>;
+      return <h1 className={classes.title}>Enter some search query.</h1>;
     }
 
     if (status === 'pending') {

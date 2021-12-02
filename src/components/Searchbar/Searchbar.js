@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PropTypes from 'prop-types';
@@ -8,47 +8,49 @@ import classes from './Searchbar.module.css';
 import IconButton from 'components/IconButton';
 import { ReactComponent as SearchIcon } from 'icons/search.svg';
 
-class Searchbar extends Component {
-  state = {
-    searchQuery: '',
+const Searchbar = ({ onSubmit }) => {
+  const [searchQuery, setSearchQuery] = useState(
+    () => JSON.parse(window.localStorage.getItem('searchQuery')) ?? ''
+  );
+
+  const handleQueryChange = ({ currentTarget: { value } }) => {
+    setSearchQuery(value.toLowerCase());
   };
 
-  handleQueryChange = ({ currentTarget: { value } }) => {
-    this.setState({ searchQuery: value.toLowerCase() });
-  };
-
-  handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    if (this.state.searchQuery.trim() === '') {
+    if (searchQuery.trim() === '') {
       return toast.error('Enter some valid search query please.');
     }
 
-    this.props.onSubmit(this.state.searchQuery);
-    this.setState({ searchQuery: '' });
+    onSubmit(searchQuery);
+    setSearchQuery('');
   };
 
-  render() {
-    return (
-      <header className={classes.searchbar}>
-        <form className={classes['search-form']} onSubmit={this.handleSubmit}>
-          <IconButton type="submit" aria-label="Search">
-            <SearchIcon width="24px" height="24px" />
-          </IconButton>
+  useEffect(() => {
+    window.localStorage.setItem('searchQuery', JSON.stringify(searchQuery));
+  }, [searchQuery]);
 
-          <input
-            className={classes['search-form-input']}
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            value={this.state.searchQuery}
-            onChange={this.handleQueryChange}
-          />
-        </form>
-      </header>
-    );
-  }
-}
+  return (
+    <header className={classes.searchbar}>
+      <form className={classes['search-form']} onSubmit={handleSubmit}>
+        <IconButton type="submit" aria-label="Search">
+          <SearchIcon width="24px" height="24px" />
+        </IconButton>
+
+        <input
+          className={classes['search-form-input']}
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          value={searchQuery}
+          onChange={handleQueryChange}
+        />
+      </form>
+    </header>
+  );
+};
 
 Searchbar.propTypes = { onSubmit: PropTypes.func.isRequired };
 
