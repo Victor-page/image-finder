@@ -6,6 +6,7 @@ import ImageGalleryDataView from './ImageGalleryDataView';
 import ImageGalleryPendingView from './ImageGalleryPendingView';
 import { fetchGallery } from 'services/pixabay-api';
 import classes from './ImageGallery.module.css';
+import { getCurrentPhotos } from 'utils/get-current-photos';
 
 const Status = {
   IDLE: 'idle',
@@ -30,14 +31,9 @@ const ImageGallery = ({ query, page, onPhotoClick, onLoadMore }) => {
     setStatus(Status.PENDING);
     fetchGallery(query, page)
       .then(({ hits: loadedPhotos }) => {
-        setPhotos((prevPhotos) => {
-          const currentPhotos =
-            prevPhotos && page > 1
-              ? prevPhotos.concat(loadedPhotos)
-              : loadedPhotos;
-
-          return currentPhotos;
-        });
+        setPhotos((prevPhotos) =>
+          getCurrentPhotos(prevPhotos, loadedPhotos, page)
+        );
         setStatus(Status.RESOLVED);
       })
       .catch((error) => {
@@ -53,8 +49,9 @@ const ImageGallery = ({ query, page, onPhotoClick, onLoadMore }) => {
   if (status === Status.PENDING) {
     return (
       <ImageGalleryPendingView
+        currentPhotos={photos}
         query={query}
-        viewsNumber={photos?.length || 12}
+        page={page}
       />
     );
   }

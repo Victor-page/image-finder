@@ -8,10 +8,12 @@ import classes from './ImageGalleryPendingView.module.css';
 
 import pendingImage from './pending-image.gif';
 
+import { getCurrentPhotos } from 'utils/get-current-photos';
+
 const spinnerRoot = document.getElementById('spinnerRoot');
 
-const ImageGalleryPendingView = ({ query, viewsNumber }) => {
-  const pendingImages = Array.from(Array(viewsNumber)).map((image, index) => ({
+const ImageGalleryPendingView = ({ currentPhotos, query, page }) => {
+  const pendingImages = Array.from(Array(12)).map((image, index) => ({
     id: index,
     tags: query,
     webformatURL: pendingImage,
@@ -27,13 +29,16 @@ const ImageGalleryPendingView = ({ query, viewsNumber }) => {
         </div>,
         spinnerRoot
       )}
-      <ImageGalleryDataView photos={pendingImages} onPhotoClick={() => {}} />
+      <ImageGalleryDataView
+        photos={getCurrentPhotos(currentPhotos, pendingImages, page)}
+        onPhotoClick={() => {}}
+      />
     </div>
   );
 };
 
 ImageGalleryPendingView.propTypes = {
-  viewsNumber: PropTypes.number.isRequired,
+  viewsNumber: PropTypes.number,
 };
 
 export default ImageGalleryPendingView;
