@@ -57,7 +57,7 @@ const ImageGallery = ({ query, page, onPhotoClick, onLoadMore }) => {
   }
 
   if (status === Status.REJECTED) {
-    <ImageGalleryErrorView message={error.message} />;
+    return <ImageGalleryErrorView message={error.message} />;
   }
 
   if (status === Status.RESOLVED) {
